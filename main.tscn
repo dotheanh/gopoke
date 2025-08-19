@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3 uid="uid://bx5xp34j3x7no"]
+
+[ext_resource type="Script" uid="uid://dbqosvgfbr2v7" path="res://DebugObjects.gd" id="1_0xm2m"]
+[ext_resource type="Script" uid="uid://bd2hkqiyydmjp" path="res://player.gd" id="1_ig7tw"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_ig7tw"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ig7tw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ig7tw"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_0xm2m")
+
+[node name="Arena" type="MeshInstance3D" parent="."]
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0512676)
+script = ExtResource("1_ig7tw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("SphereMesh_ig7tw")
+
+[node name="Monster" type="CharacterBody3D" parent="." groups=["Enemy"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.40083, 0, 1.97251)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Monster"]
+mesh = SubResource("BoxMesh_ig7tw")
+
+[node name="Hitbox" type="Area3D" parent="Monster"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Monster/Hitbox"]
+shape = SubResource("BoxShape3D_ig7tw")
+
+[node name="Boss" type="CharacterBody3D" parent="." groups=["Enemy"]]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -6.80598, 0, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Boss"]
+mesh = SubResource("SphereMesh_ig7tw")
+
+[node name="Hitbox" type="Area3D" parent="Boss"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Boss/Hitbox"]
+shape = SubResource("SphereShape3D_ig7tw")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.27562e-08, -0.0383878, 0.999263, 9.08811e-09, 0.999263, 0.0383878, -1, 1.07227e-08, -4.23758e-08, 2.85846, 1.25815, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.769901, 0, 0.638163, -0.341446, 0.844823, 0.411932, -0.539135, -0.535046, 0.65043, 0, 1.80417, 5.9951)
