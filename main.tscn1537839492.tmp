@@ -26,7 +26,7 @@ mesh = SubResource("PlaneMesh_0xm2m")
 [node name="Arena" type="MeshInstance3D" parent="."]
 
 [node name="Player" type="CharacterBody3D" parent="."]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.500278, 0.00150204)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.556636, 0.0512676)
 script = ExtResource("1_ig7tw")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
@@ -35,14 +35,8 @@ mesh = SubResource("SphereMesh_ig7tw")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
 shape = SubResource("SphereShape3D_0xm2m")
 
-[node name="CameraPivot" type="Node3D" parent="Player"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.556636, -0.0512676)
-
-[node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
-transform = Transform3D(1, -1.06611e-08, -3.06458e-09, 1.10705e-08, 0.941618, 0.336684, -7.03771e-10, -0.336684, 0.941618, 2.21077e-07, 3.37683, 5.08582)
-
 [node name="Monster" type="CharacterBody3D" parent="." groups=["Enemy"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95867, 0.576394, 9.60886)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.40083, 0.531472, 1.97251)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Monster"]
 mesh = SubResource("BoxMesh_ig7tw")
@@ -51,14 +45,16 @@ mesh = SubResource("BoxMesh_ig7tw")
 shape = SubResource("BoxShape3D_ig7tw")
 
 [node name="Boss" type="CharacterBody3D" parent="." groups=["Enemy"]]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.0208726, 1.51606, 12.6606)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, -6.80598, 1.57288, 0)
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Boss"]
 mesh = SubResource("SphereMesh_ig7tw")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Boss"]
 shape = SubResource("SphereShape3D_ig7tw")
-debug_color = Color(0.996227, 0, 0.190787, 0.42)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-4.36813e-08, -0.209192, 0.977875, 1.62081e-09, 0.977875, 0.209192, -1, 1.07227e-08, -4.23758e-08, 2.85846, 2.29871, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.769901, 0, 0.638163, -0.341446, 0.844823, 0.411932, -0.539135, -0.535046, 0.65043, 0, 1.80417, 5.9951)
