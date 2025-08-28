@@ -38,7 +38,7 @@ func take_damage(amount: int) -> void:
 func die() -> void:
 	print("Player died!")
 	queue_free()
-	# Có thể thêm logic restart scene hoặc trigger game over
+	GameManagerGlobal.on_player_died()
 
 func _input(event):
 	# CLICK để lock target
