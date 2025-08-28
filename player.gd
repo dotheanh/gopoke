@@ -2,7 +2,8 @@ extends CharacterBody3D
 
 # --- CONFIG ---
 var speed := 5.0
-var orbit_angle_speed := 1.0  # tốc độ quay quanh target
+var orbit_angle_speed := 3.0  # tốc độ quay quanh target
+var zoom_speed := 20.0  # tốc độ tiến/lùi quanh target
 
 # --- NODES ---
 @onready var camera: Camera3D = $CameraPivot/Camera3D
@@ -73,30 +74,39 @@ func _physics_process(delta):
 		# Marker luôn bám đầu target
 		marker.global_transform.origin = current_target.global_transform.origin + Vector3(0, 2, 0)
 		
-		# --- Input orbit
-		var input_dir = 0
+		# --- Input orbit trái/phải ---
+		var orbit_input = 0
 		if Input.is_key_pressed(Key.KEY_LEFT):
-			input_dir += 1
+			orbit_input += 1
 		if Input.is_key_pressed(Key.KEY_RIGHT):
-			input_dir -= 1
+			orbit_input -= 1
 		
-		if input_dir != 0:
-			orbit_angle += input_dir * orbit_angle_speed * delta
-			var target_pos = current_target.global_transform.origin
-			
-			# Orbit quanh target, giữ y của Player
-			var new_pos = Vector3(
-				target_pos.x + orbit_radius * cos(orbit_angle),
-				global_transform.origin.y,  # giữ chiều cao hiện tại
-				target_pos.z + orbit_radius * sin(orbit_angle)
-			)
-			global_transform.origin = new_pos
-			
-			# Player luôn nhìn về target (trên mặt phẳng XZ)
-			var desired_rotation = (target_pos - global_transform.origin).normalized()
-			var current_forward = -global_transform.basis.z
-
-			# Lerp hướng nhìn mượt
-			var lerped_dir = current_forward.lerp(desired_rotation, delta * 10.0).normalized()
-
-			look_at(global_transform.origin + lerped_dir, Vector3.UP)
+		if orbit_input != 0:
+			orbit_angle += orbit_input * orbit_angle_speed * delta
+		
+		# --- Input tiến/lùi (up/down) để thay đổi khoảng cách ---
+		var zoom_input = 0
+		if Input.is_key_pressed(Key.KEY_UP):
+			zoom_input -= 1
+		if Input.is_key_pressed(Key.KEY_DOWN):
+			zoom_input += 1
+		
+		if zoom_input != 0:
+			orbit_radius += zoom_input * delta * zoom_speed
+			orbit_radius = max(1.0, orbit_radius)     # hạn chế không đi sát target quá
+		
+		var target_pos = current_target.global_transform.origin
+		
+		# Tính vị trí mới Player theo orbit_angle và orbit_radius, giữ y
+		var new_pos = Vector3(
+			target_pos.x + orbit_radius * cos(orbit_angle),
+			global_transform.origin.y,
+			target_pos.z + orbit_radius * sin(orbit_angle)
+		)
+		global_transform.origin = new_pos
+		
+		# Player nhìn về target, mượt
+		var desired_rotation = (target_pos - global_transform.origin).normalized()
+		var current_forward = -global_transform.basis.z
+		var lerped_dir = current_forward.lerp(desired_rotation, delta * 10.0).normalized()
+		look_at(global_transform.origin + lerped_dir, Vector3.UP)
