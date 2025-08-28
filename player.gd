@@ -3,7 +3,8 @@ extends CharacterBody3D
 # --- CONFIG ---
 var speed := 5.0
 var orbit_angle_speed := 3.0  # tốc độ quay quanh target
-var zoom_speed := 20.0  # tốc độ tiến/lùi quanh target
+var zoom_speed := 20.0        # tốc độ tiến/lùi quanh target
+@export var max_hp := 100
 
 # --- NODES ---
 @onready var camera: Camera3D = $CameraPivot/Camera3D
@@ -13,18 +14,31 @@ var zoom_speed := 20.0  # tốc độ tiến/lùi quanh target
 var current_target: Node = null
 var orbit_angle: float = 0.0
 var orbit_radius: float = 3.0  # giá trị mặc định nếu muốn
+var hp: int
 
 func _ready():
+	GameManagerGlobal.player = self
+	hp = max_hp
+	
 	# Khởi tạo marker
 	marker.mesh = SphereMesh.new()
 	marker.scale = Vector3(0.3, 0.3, 0.3)
-	
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color.RED
 	marker.material_override = mat
-	
 	add_child(marker)
 	marker.visible = false
+
+func take_damage(amount: int) -> void:
+	hp -= amount
+	print("Player took", amount, "damage. HP =", hp)
+	if hp <= 0:
+		die()
+
+func die() -> void:
+	print("Player died!")
+	queue_free()
+	# Có thể thêm logic restart scene hoặc trigger game over
 
 func _input(event):
 	# CLICK để lock target
@@ -59,11 +73,8 @@ func lock_target(target_node: Node) -> void:
 	marker.visible = true
 	marker.global_transform.origin = target_node.global_transform.origin + Vector3(0, 2, 0)
 	
-	# Khởi tạo orbit_radius từ khoảng cách Player -> target trên mặt phẳng XZ
 	var flat_player_pos = Vector3(global_transform.origin.x, target_node.global_transform.origin.y, global_transform.origin.z)
 	orbit_radius = (flat_player_pos - target_node.global_transform.origin).length()
-	
-	# Tính góc ban đầu dựa theo vị trí Player so với target
 	orbit_angle = atan2(global_transform.origin.z - target_node.global_transform.origin.z,
 						global_transform.origin.x - target_node.global_transform.origin.x)
 	
@@ -84,7 +95,7 @@ func _physics_process(delta):
 		if orbit_input != 0:
 			orbit_angle += orbit_input * orbit_angle_speed * delta
 		
-		# --- Input tiến/lùi (up/down) để thay đổi khoảng cách ---
+		# --- Input tiến/lùi (up/down) ---
 		var zoom_input = 0
 		if Input.is_key_pressed(Key.KEY_UP):
 			zoom_input -= 1
@@ -93,11 +104,11 @@ func _physics_process(delta):
 		
 		if zoom_input != 0:
 			orbit_radius += zoom_input * delta * zoom_speed
-			orbit_radius = max(1.0, orbit_radius)     # hạn chế không đi sát target quá
+			orbit_radius = max(1.0, orbit_radius)
 		
 		var target_pos = current_target.global_transform.origin
 		
-		# Tính vị trí mới Player theo orbit_angle và orbit_radius, giữ y
+		# Vị trí Player theo orbit_angle và orbit_radius
 		var new_pos = Vector3(
 			target_pos.x + orbit_radius * cos(orbit_angle),
 			global_transform.origin.y,

@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://bwp5mcjx2xhw4" path="res://monster.gd" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://clvtlvv802yr5" path="res://monster_skill_caster.gd" id="4_7mycd"]
 [ext_resource type="Script" uid="uid://dglny0i64jogu" path="res://skill_data.gd" id="5_272bh"]
-[ext_resource type="Resource" uid="uid://dimb6w67qdkq6" path="res://meteor_skill.tres" id="6_5vw27"]
+[ext_resource type="Resource" uid="uid://dimb6w67qdkq6" path="res://slash_skill.tres" id="6_5vw27"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(128, 128)

@@ -1,14 +1,15 @@
 [gd_resource type="Resource" script_class="SkillData" load_steps=2 format=3 uid="uid://dimb6w67qdkq6"]
 
-[ext_resource type="Script" uid="uid://dglny0i64jogu" path="res://skill_data.gd" id="1_p82yg"]
+[ext_resource type="Script" uid="uid://dglny0i64jogu" path="res://skill_data.gd" id="1_flq6w"]
 
 [resource]
-script = ExtResource("1_p82yg")
-skill_name = "Slash"
+script = ExtResource("1_flq6w")
+skill_name = "Meteor"
 shape = "cone"
 size = Vector3(2, 0.1, 2)
 damage = 15
-range = 3.0
+effect_range = 5.0
 cast_time = 0.5
 cooldown = 3.0
+speed = 10.0
 metadata/_custom_type_script = "uid://dglny0i64jogu"

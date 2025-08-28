@@ -48,6 +48,7 @@ transform = Transform3D(1, -1.06611e-08, -3.06458e-09, 1.10705e-08, 0.941618, 0.
 [node name="Monster" type="CharacterBody3D" parent="." groups=["Enemy"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95867, 0.576394, 9.60886)
 script = ExtResource("3_h2yge")
+max_hp = null
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Monster"]
 mesh = SubResource("BoxMesh_ig7tw")
