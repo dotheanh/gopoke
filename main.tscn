@@ -1,11 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://bx5xp34j3x7no"]
+[gd_scene load_steps=15 format=3 uid="uid://bx5xp34j3x7no"]
 
 [ext_resource type="Script" uid="uid://dbqosvgfbr2v7" path="res://DebugObjects.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bd2hkqiyydmjp" path="res://player.gd" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://bwp5mcjx2xhw4" path="res://monster.gd" id="3_h2yge"]
 [ext_resource type="Script" uid="uid://clvtlvv802yr5" path="res://monster_skill_caster.gd" id="4_7mycd"]
 [ext_resource type="Script" uid="uid://dglny0i64jogu" path="res://skill_data.gd" id="5_272bh"]
-[ext_resource type="Resource" uid="uid://dimb6w67qdkq6" path="res://meteor_skill.tres" id="6_5vw27"]
+[ext_resource type="Resource" uid="uid://dimb6w67qdkq6" path="res://skills/meteor_skill.tres" id="6_5vw27"]
+[ext_resource type="Resource" uid="uid://di7u74pwm5u0j" path="res://skills/quake_skill.tres" id="6_272bh"]
+[ext_resource type="Script" uid="uid://ca7a44p1mvp0k" path="res://boss.gd" id="7_272bh"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(128, 128)
@@ -57,11 +59,12 @@ shape = SubResource("BoxShape3D_ig7tw")
 
 [node name="MonsterSkillCaster" type="Node" parent="Monster"]
 script = ExtResource("4_7mycd")
-skills = Array[ExtResource("5_272bh")]([ExtResource("6_5vw27")])
+skills = Array[ExtResource("5_272bh")]([ExtResource("6_272bh")])
 metadata/_custom_type_script = "uid://clvtlvv802yr5"
 
 [node name="Boss" type="CharacterBody3D" parent="." groups=["Enemy"]]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.0208726, 1.51606, 12.6606)
+script = ExtResource("7_272bh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Boss"]
 mesh = SubResource("SphereMesh_ig7tw")
@@ -69,6 +72,11 @@ mesh = SubResource("SphereMesh_ig7tw")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Boss"]
 shape = SubResource("SphereShape3D_ig7tw")
 debug_color = Color(0.996227, 0, 0.190787, 0.42)
+
+[node name="MonsterSkillCaster" type="Node" parent="Boss"]
+script = ExtResource("4_7mycd")
+skills = Array[ExtResource("5_272bh")]([ExtResource("6_5vw27")])
+metadata/_custom_type_script = "uid://clvtlvv802yr5"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.769901, 0, 0.638163, -0.341446, 0.844823, 0.411932, -0.539135, -0.535046, 0.65043, 0, 1.80417, 5.9951)

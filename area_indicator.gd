@@ -8,7 +8,8 @@ func setup(shape: String, size: Vector3):
 		"circle":
 			var m = CylinderMesh.new()
 			m.height = 0.05
-			m.radius = size.x
+			m.top_radius = size.x
+			m.bottom_radius = size.x
 			mesh = m
 		"line":
 			var b = BoxMesh.new()
