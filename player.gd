@@ -16,9 +16,13 @@ var orbit_angle: float = 0.0
 var orbit_radius: float = 3.0  # giá trị mặc định nếu muốn
 var hp: int
 
+signal hp_changed(current: int, max: int)
+
 func _ready():
 	GameManagerGlobal.player = self
 	hp = max_hp
+	GameManagerGlobal.register_player(self)
+	emit_signal("hp_changed", hp, max_hp)
 	
 	# Khởi tạo marker
 	marker.mesh = SphereMesh.new()
@@ -30,10 +34,15 @@ func _ready():
 	marker.visible = false
 
 func take_damage(amount: int) -> void:
-	hp -= amount
+	hp = max(0, hp - amount)
 	print("Player took", amount, "damage. HP =", hp)
-	if hp <= 0:
+	emit_signal("hp_changed", hp, max_hp)
+	if hp == 0:
 		die()
+
+func heal(amount: int) -> void:
+	hp = clamp(hp + amount, 0, max_hp)
+	emit_signal("hp_changed", hp, max_hp)
 
 func die() -> void:
 	print("Player died!")

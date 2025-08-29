@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7382nrtaslyj"]
+
+[ext_resource type="Script" uid="uid://cpvp661vfkyft" path="res://ui/hud.gd" id="1_1x8ju"]
+
+[node name="Hud" type="CanvasLayer" node_paths=PackedStringArray("hp_bar")]
+layer = 10
+script = ExtResource("1_1x8ju")
+hp_bar = NodePath("MarginContainer/PlayerHPBar")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -360.0
+offset_top = -80.0
+offset_right = 361.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="PlayerHPBar" type="ProgressBar" parent="MarginContainer"]
+layout_mode = 2
+value = 50.0

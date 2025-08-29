@@ -34,6 +34,7 @@ mesh = SubResource("PlaneMesh_0xm2m")
 [node name="Player" type="CharacterBody3D" parent="." groups=["Player"]]
 transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.500278, 0.00150204)
 script = ExtResource("1_ig7tw")
+max_hp = 1000
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
 mesh = SubResource("SphereMesh_ig7tw")
@@ -45,10 +46,10 @@ shape = SubResource("SphereShape3D_0xm2m")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.556636, -0.0512676)
 
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
-transform = Transform3D(1, -1.06611e-08, -3.06458e-09, 1.10705e-08, 0.941618, 0.336684, -7.03771e-10, -0.336684, 0.941618, 2.21077e-07, 3.37683, 5.08582)
+transform = Transform3D(1, -1.06611e-08, -3.06457e-09, 1.10705e-08, 0.941618, 0.336684, -7.03771e-10, -0.336684, 0.941618, 1.27686e-08, 2.7542, 2.70305)
 
 [node name="Monster" type="CharacterBody3D" parent="." groups=["Enemy"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95867, 0.576394, 9.60886)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.42777, 0.576394, 6.73961)
 script = ExtResource("3_h2yge")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Monster"]
@@ -63,7 +64,7 @@ skill_resources = Array[ExtResource("5_272bh")]([ExtResource("6_272bh")])
 metadata/_custom_type_script = "uid://clvtlvv802yr5"
 
 [node name="Boss" type="CharacterBody3D" parent="." groups=["Enemy"]]
-transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.0208726, 1.51606, 12.6606)
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.0208726, 1.51606, 20.5308)
 script = ExtResource("7_272bh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Boss"]

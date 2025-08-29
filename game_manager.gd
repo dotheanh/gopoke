@@ -1,12 +1,33 @@
 extends Node
 class_name GameManager
 
+const HUD_SCENE := preload("res://ui/HUD.tscn")
+
 # Tham chiếu Player
 @export var player: Node3D = null
+var hud: HUD = null
 
 func _ready():
+	_ensure_hud()
 	print("GameManager ready. Player:", player)
+	
+func _ensure_hud():
+	if hud == null:
+		print("HUD is null → creating")
+		hud = HUD_SCENE.instantiate() as HUD
+		print("After instantiate, hud = ", hud)
+		get_tree().current_scene.add_child(hud)
+		if player:
+			print("Binding player: ", player)
+			hud.bind_player(player)
+	else:
+		print("HUD already exists: ", hud)
 
+func register_player(p: Node3D) -> void:
+	player = p
+	_ensure_hud()
+	if hud:
+		hud.bind_player(player)
 
 func on_player_died():
 	show_game_over_ui()
