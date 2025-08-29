@@ -1,17 +1,23 @@
+# monster.gd
 extends CharacterBody3D
 class_name Monster
 
 @export var max_hp: int = 100
 var hp: int
+var delay_start: float = 1
 
 @onready var skill_caster: MonsterSkillCaster = $MonsterSkillCaster
 
 func _ready():
 	hp = max_hp
 	
+	await Engine.get_main_loop().create_timer(delay_start).timeout
+	
+	# gán owner cho skill_caster
+	skill_caster.caster = self
+	
 	# bắt đầu AI cast skill
-	skill_caster.owner = self
-	if not skill_caster.skills.is_empty():
+	if not skill_caster.skill_instances.is_empty():
 		auto_cast()
 
 func take_damage(amount: int) -> void:
@@ -27,9 +33,8 @@ func die():
 func auto_cast():
 	await get_tree().process_frame
 	while hp > 0:
-		if skill_caster.can_cast and not skill_caster.skills.is_empty():
-			var skill = skill_caster.skills[randi() % skill_caster.skills.size()]
-			# target giả định: Player (có thể set qua global singleton GameManagerGlobal)
+		if skill_caster.can_cast and not skill_caster.skill_instances.is_empty():
+			var skill = skill_caster.skill_instances[randi() % skill_caster.skill_instances.size()]
 			var player = GameManagerGlobal.player
 			if player:
 				skill_caster.cast(skill, player.global_transform.origin)

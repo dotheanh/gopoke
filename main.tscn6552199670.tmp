@@ -50,6 +50,7 @@ transform = Transform3D(1, -1.06611e-08, -3.06458e-09, 1.10705e-08, 0.941618, 0.
 [node name="Monster" type="CharacterBody3D" parent="." groups=["Enemy"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.95867, 0.576394, 9.60886)
 script = ExtResource("3_h2yge")
+max_hp = null
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Monster"]
 mesh = SubResource("BoxMesh_ig7tw")
@@ -59,7 +60,7 @@ shape = SubResource("BoxShape3D_ig7tw")
 
 [node name="MonsterSkillCaster" type="Node" parent="Monster"]
 script = ExtResource("4_7mycd")
-skill_resources = Array[ExtResource("5_272bh")]([ExtResource("6_272bh")])
+skills = Array[ExtResource("5_272bh")]([ExtResource("6_272bh")])
 metadata/_custom_type_script = "uid://clvtlvv802yr5"
 
 [node name="Boss" type="CharacterBody3D" parent="." groups=["Enemy"]]
@@ -75,7 +76,7 @@ debug_color = Color(0.996227, 0, 0.190787, 0.42)
 
 [node name="MonsterSkillCaster" type="Node" parent="Boss"]
 script = ExtResource("4_7mycd")
-skill_resources = Array[ExtResource("5_272bh")]([ExtResource("6_5vw27")])
+skills = Array[ExtResource("5_272bh")]([ExtResource("6_5vw27")])
 metadata/_custom_type_script = "uid://clvtlvv802yr5"
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]

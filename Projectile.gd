@@ -6,6 +6,7 @@ class_name Projectile
 @export var damage: int = 30
 @export var radius: float = 1.0  # bán kính va chạm
 var target_pos: Vector3
+var caster: Node3D
 
 # Mesh hiển thị
 var mesh_instance: MeshInstance3D

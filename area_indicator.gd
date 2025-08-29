@@ -7,7 +7,7 @@ func setup(shape: String, size: Vector3):
 	match shape:
 		"circle":
 			var m = CylinderMesh.new()
-			m.height = 0.05
+			m.height = size.y
 			m.top_radius = size.x
 			m.bottom_radius = size.x
 			mesh = m
@@ -17,7 +17,7 @@ func setup(shape: String, size: Vector3):
 			mesh = b
 		"cone":
 			var c = CylinderMesh.new()
-			c.height = 0.05
+			c.height = size.y
 			c.top_radius = size.x
 			c.bottom_radius = 0.0
 			mesh = c
