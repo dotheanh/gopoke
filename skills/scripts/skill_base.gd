@@ -7,13 +7,10 @@ var caster: Node3D
 
 # Entry point để cast skill
 func cast(target_pos: Vector3) -> void:
-	# 1. show indicator
+	#  show indicator
 	await show_indicator(caster, target_pos)
 	
-	# 2. chờ cast_time
-	await Engine.get_main_loop().create_timer(data.cast_time).timeout
-	
-	# 3. thi triển skill
+	#  thi triển skill
 	execute(target_pos)
 	
 	await Engine.get_main_loop().create_timer(data.cooldown).timeout

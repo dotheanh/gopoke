@@ -6,7 +6,7 @@
 script = ExtResource("1_24vc8")
 skill_name = "Quake"
 shape = "circle"
-size = Vector3(2, 0.1, 2)
+size = Vector3(4, 0.1, 4)
 damage = 10
 effect_range = 5.0
 cast_time = 1.0
