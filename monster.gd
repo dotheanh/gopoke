@@ -37,5 +37,7 @@ func auto_cast():
 			var skill = skill_caster.skill_instances[randi() % skill_caster.skill_instances.size()]
 			var player = GameManagerGlobal.player
 			if player:
+				# Look at Player
+				look_at(player.global_transform.origin, Vector3.UP)
 				skill_caster.cast(skill, player.global_transform.origin)
 		await get_tree().process_frame

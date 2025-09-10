@@ -15,6 +15,8 @@ func cast(target_pos: Vector3) -> void:
 	
 	# 3. thi triển skill
 	execute(target_pos)
+	
+	await Engine.get_main_loop().create_timer(data.cooldown).timeout
 
 # Hiển thị Indicator (có thể override để thay đổi vị trí)
 func show_indicator(parent: Node3D, target_pos: Vector3):
