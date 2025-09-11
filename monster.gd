@@ -2,6 +2,8 @@
 extends CharacterBody3D
 class_name Monster
 
+@export var anim_player: AnimationPlayer
+
 @export var max_hp: int = 100
 @export var delay_start: float = 1.0
 @export var rotation_speed: float = 5.0 # radians/sec
@@ -17,6 +19,7 @@ const PI = 3.141592653589793
 const TAU = PI * 2.0
 
 func _ready():
+	anim_player.play("Idle")
 	hp = max_hp
 	await Engine.get_main_loop().create_timer(delay_start).timeout
 	skill_caster.caster = self

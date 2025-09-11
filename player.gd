@@ -5,6 +5,7 @@ var speed := 5.0
 var orbit_angle_speed := 3.0  # tốc độ quay quanh target
 var zoom_speed := 20.0        # tốc độ tiến/lùi quanh target
 @export var max_hp := 100
+@export var anim_player: AnimationPlayer
 
 # --- NODES ---
 @onready var camera: Camera3D = $CameraPivot/Camera3D
@@ -19,6 +20,7 @@ var hp: int
 signal hp_changed(current: int, max: int)
 
 func _ready():
+	anim_player.play("Idle")
 	GameManagerGlobal.player = self
 	hp = max_hp
 	GameManagerGlobal.register_player(self)
@@ -80,7 +82,7 @@ func _input(event):
 func lock_target(target_node: Node) -> void:
 	current_target = target_node
 	marker.visible = true
-	marker.global_transform.origin = target_node.global_transform.origin + Vector3(0, 2, 0)
+	marker.global_transform.origin = target_node.global_transform.origin + Vector3(0, 3, 0)
 	
 	var flat_player_pos = Vector3(global_transform.origin.x, target_node.global_transform.origin.y, global_transform.origin.z)
 	orbit_radius = (flat_player_pos - target_node.global_transform.origin).length()
