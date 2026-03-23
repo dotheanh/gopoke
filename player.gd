@@ -122,18 +122,32 @@ func _input(event):
 		_cast_arrow()
 
 func lock_target(target_node: Node) -> void:
+	# Ngắt signal died cũ nếu có
+	if current_target and current_target.has_signal("died") and current_target.died.is_connected(_on_target_died):
+		current_target.died.disconnect(_on_target_died)
+
 	current_target = target_node
 	# Đánh dấu locked target để Arrow nhận biết
 	set_meta("locked_target", target_node)
 	marker.visible = true
 	marker.global_transform.origin = target_node.global_transform.origin + Vector3(0, 3, 0)
-	
+
+	# Lắng nghe khi target chết → tự unlock
+	if target_node.has_signal("died"):
+		target_node.died.connect(_on_target_died)
+
 	var flat_player_pos = Vector3(global_transform.origin.x, target_node.global_transform.origin.y, global_transform.origin.z)
 	orbit_radius = (flat_player_pos - target_node.global_transform.origin).length()
 	orbit_angle = atan2(global_transform.origin.z - target_node.global_transform.origin.z,
 						global_transform.origin.x - target_node.global_transform.origin.x)
-	
+
 	print("Locked target:", target_node.name, "Orbit radius:", orbit_radius)
+
+# Khi target chết → tắt marker, unlock target
+func _on_target_died() -> void:
+	current_target = null
+	marker.visible = false
+	remove_meta("locked_target")
 
 func _physics_process(delta):
 	if current_target:

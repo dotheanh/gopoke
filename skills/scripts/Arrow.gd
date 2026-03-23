@@ -1,6 +1,6 @@
 # Arrow.gd
 # Skill bắn tên đường thẳng từ caster đến target position.
-# Shape: line/box — hiển thị indicator dưới chân target.
+# Indicator hiển thị đường bay từ caster → target.
 # Override hit logic để nhận biết target cụ thể (monster đang lock).
 
 extends SkillBase
@@ -8,6 +8,29 @@ class_name ArrowSkill
 
 # Biến riêng cho Arrow
 var _arrow_instance: Area3D
+
+# Override: indicator ở giữa đường bay caster→target
+func get_indicator_position(target_pos: Vector3) -> Vector3:
+	var caster_pos := caster.global_transform.origin + Vector3(0, 0.5, 0)
+	var end_pos := target_pos + Vector3(0, 0.5, 0)
+	return caster_pos.lerp(end_pos, 0.5)
+
+# Override: xoay indicator theo hướng bay + scale chiều dài theo khoảng cách
+func show_indicator(target_pos: Vector3):
+	var indicator = AreaIndicator.new()
+	var caster_pos := caster.global_transform.origin
+	var flight_dist := caster_pos.distance_to(target_pos)
+	# Tạo box dài bằng khoảng cách bay, mỏng dọc hướng bắn
+	indicator.setup(data.shape, Vector3(data.size.x, data.size.y, flight_dist))
+	var current_scene = GameManagerGlobal.get_tree().get_current_scene()
+	current_scene.add_child(indicator)
+	# Đặt ở giữa đường bay, nâng nhẹ lên mặt đất
+	var mid := caster_pos.lerp(target_pos, 0.5) + Vector3(0, 0.15, 0)
+	indicator.global_transform.origin = mid
+	# Xoay indicator nhìn về target
+	indicator.look_at(target_pos + Vector3(0, 0.15, 0), Vector3.UP)
+	await Engine.get_main_loop().create_timer(data.cast_time).timeout
+	indicator.queue_free()
 
 func execute(target_pos: Vector3) -> void:
 	var arrow = Area3D.new()
@@ -51,11 +74,6 @@ func execute(target_pos: Vector3) -> void:
 	# Cylinder mặc định nằm dọc Y, xoay 90° quanh X để nằm ngang
 	arrow.rotate_object_local(Vector3.RIGHT, deg_to_rad(90))
 
-	# Di chuyển đến target
-	var dir: Vector3 = (target_pos - arrow.global_transform.origin)
-	dir.y = 0
-	if dir.length() > 0.001:
-		dir = dir.normalized()
 	_arrow_instance = arrow
 
 	# Bay đến target
