@@ -23,7 +23,6 @@ var _idle_animation: String = "Idle"
 @onready var skill_caster: MonsterSkillCaster = $MonsterSkillCaster
 @onready var hp_bar_fill: MeshInstance3D = $HPBarFill
 @onready var hp_bar_bg: MeshInstance3D = $HPBarBg
-@onready var hp_bar_label: Label3D = $HPBarLabel
 
 ## AnimationPlayer nằm trong scene con đã instance (VD: megaswampert2/AnimationPlayer)
 ## Dùng find_child thay vì @export để tránh NodePath resolution order issue
@@ -31,6 +30,12 @@ var anim_player: AnimationPlayer
 
 ## Tên scene con chứa model (đặt trong Inspector hoặc override ở subclass)
 @export var model_scene_name: String = ""
+
+## HP bar — separate name label + HP number label
+## Name label: bên trên thanh máu (null nếu node không tồn tại — Boss không có)
+var hp_name_label: Label3D
+## HP number label: bên trong thanh máu
+var hp_num_label: Label3D
 
 # ── AI state ────────────────────────────────────────────────────
 var _target_yaw: float = 0.0
@@ -84,6 +89,10 @@ func _ready():
 	# Tìm AnimationPlayer trong scene con SAU khi scene đã được setup đầy đủ
 	anim_player = _find_animation_player()
 
+	# Lấy HP bar labels — có thể null (Boss không có 3D labels)
+	hp_name_label = get_node_or_null("HPNameLabel")
+	hp_num_label = get_node_or_null("HPNumLabel")
+
 	if config != null:
 		_apply_config()
 	else:
@@ -110,11 +119,16 @@ func _apply_config() -> void:
 	if anim_player != null and anim_player.has_animation(_idle_animation):
 		anim_player.play(_idle_animation)
 
-	# Setup HP bar Label3D
-	if hp_bar_label != null:
-		var display = config.display_name if config and "display_name" in config else name
-		hp_bar_label.text = "%s: %d/%d" % [display, hp, max_hp]
-		hp_bar_label.modulate = _hp_color_ratio(1.0)
+	# ── HP bar labels — separate name vs HP number ──────────────────
+	var display: String = config.display_name if "display_name" in config else str(name)
+
+	if hp_name_label != null:
+		hp_name_label.text = display
+		hp_name_label.modulate = Color(1, 1, 1, 1)
+
+	if hp_num_label != null:
+		hp_num_label.text = "%d/%d" % [hp, max_hp]
+		hp_num_label.modulate = Color(1, 1, 1, 1)
 
 	# Lưu kích thước BoxMesh fill để scale đúng
 	if hp_bar_fill != null and hp_bar_fill.mesh is BoxMesh:
@@ -128,6 +142,9 @@ func _apply_defaults() -> void:
 	_idle_animation = "Idle"
 	if anim_player != null and anim_player.has_animation(_idle_animation):
 		anim_player.play(_idle_animation)
+	if hp_bar_fill != null and hp_bar_fill.mesh is BoxMesh:
+		_bar_max_size = (hp_bar_fill.mesh as BoxMesh).size.x
+		hp_changed.connect(_on_hp_bar_update)
 
 # ─────────────────────────────────────────────────────────────────
 func take_damage(amount: int) -> void:
@@ -141,8 +158,10 @@ func die() -> void:
 	_pending_skill = null
 
 	# Xóa HP bar
-	if hp_bar_label != null:
-		hp_bar_label.queue_free()
+	if hp_name_label != null:
+		hp_name_label.queue_free()
+	if hp_num_label != null:
+		hp_num_label.queue_free()
 	if hp_bar_fill != null:
 		hp_bar_fill.queue_free()
 	if hp_bar_bg != null:
@@ -228,10 +247,12 @@ func _on_hp_bar_update(current: int, max_val: int) -> void:
 			hp_bar_fill.material_override = StandardMaterial3D.new()
 		hp_bar_fill.material_override.albedo_color = _hp_color_ratio(ratio)
 
-	# Cập nhật chữ
-	if hp_bar_label != null:
-		var display = config.display_name if config and "display_name" in config else name
-		hp_bar_label.text = "%s: %d/%d" % [display, current, max_val]
+	# Cập nhật separate labels: name + HP number
+	var display: String = config.display_name if config and "display_name" in config else str(name)
+	if hp_name_label != null:
+		hp_name_label.text = display
+	if hp_num_label != null:
+		hp_num_label.text = "%d/%d" % [current, max_val]
 
 ## Setup hướng nhắm — gọi từ bên ngoài khi muốn ép skill cụ thể
 func aim_at(target_pos: Vector3, skill: SkillBase) -> void:
