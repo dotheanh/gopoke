@@ -87,11 +87,10 @@ func _cast_arrow() -> void:
 	_arrow_cooldown = true
 
 func _input(event):
-	# CLICK để lock target hoặc cast Arrow (click lên chính player)
-	if event is InputEventMouseButton and event.pressed:
+	# CLICK để lock target hoặc cast Arrow
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		var cam = get_viewport().get_camera_3d()
 		if not cam:
-			print("No active camera found!")
 			return
 
 		var from = cam.project_ray_origin(event.position)
@@ -102,7 +101,6 @@ func _input(event):
 		params.from = from
 		params.to = to
 		params.collision_mask = 1
-		params.exclude = [self]
 
 		var space_state = get_world_3d().direct_space_state
 		var result = space_state.intersect_ray(params)
@@ -114,6 +112,10 @@ func _input(event):
 				_cast_arrow()
 			elif collider.is_in_group("Enemy"):
 				lock_target(collider)
+		else:
+			# Click vào khoảng trống → cast Arrow nếu có target
+			if current_target:
+				_cast_arrow()
 
 	# Phím F để cast Arrow
 	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_F:

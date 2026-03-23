@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bx5xp34j3x7no"]
+[gd_scene load_steps=31 format=3 uid="uid://bx5xp34j3x7no"]
 
 [ext_resource type="Script" uid="uid://dbqosvgfbr2v7" path="res://DebugObjects.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bd2hkqiyydmjp" path="res://player.gd" id="1_ig7tw"]
@@ -14,6 +14,7 @@
 [ext_resource type="Resource" uid="uid://dcdtx4k5nyb08" path="res://configs/swampert_config.tres" id="9_swampertcfg"]
 [ext_resource type="Resource" uid="uid://d4j7e52m1ylgo" path="res://configs/rayquaza_config.tres" id="10_rayquazacfg"]
 [ext_resource type="Script" uid="uid://bvvvyvqcyly5e" path="res://boss_hp_bar.gd" id="11_bosphb"]
+[ext_resource type="Resource" uid="uid://rrow001xxxx" path="res://configs/arrow_skill_data.tres" id="12_arrowsd"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(128, 128)
@@ -68,6 +69,7 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.5
 script = ExtResource("1_ig7tw")
 max_hp = 1000
 anim_player = NodePath("megasceptile2/AnimationPlayer")
+arrow_skill_data = ExtResource("12_arrowsd")
 
 [node name="megasceptile2" parent="Player" instance=ExtResource("3_efxa6")]
 transform = Transform3D(-0.01, 0, -1.50996e-09, 0, 0.01, 0, 1.50996e-09, 0, -0.01, 0, 0, 0)

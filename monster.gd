@@ -168,11 +168,9 @@ func die() -> void:
 		hp_bar_bg.queue_free()
 
 	# Scale animation để tạo hiệu ứng biến mất
-	var tween := create_tween().set_parallel(true)
+	var tween := create_tween()
 	tween.tween_property(self, "scale", Vector3.ZERO, 0.4)\
 		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(self, "modulate:a", 0.0, 0.3)\
-		.set_ease(Tween.EASE_IN)
 
 	await tween.finished
 	emit_signal("died")
