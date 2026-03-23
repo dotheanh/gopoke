@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="MonsterConfig" load_steps=5 format=3 uid="uid://dcdtx4k5nyb08"]
+
+[ext_resource type="Script" uid="uid://cng1uhir4bu28" path="res://configs/monster_config.gd" id="1_x62si"]
+[ext_resource type="Script" uid="uid://dglny0i64jogu" path="res://skill_data.gd" id="2_kt2ik"]
+[ext_resource type="Resource" uid="uid://bgut6vsy1241s" path="res://configs/meteor_skill_data.tres" id="3_skgyi"]
+[ext_resource type="Resource" uid="uid://b1lcgmi7fe5r2" path="res://configs/quake_skill_data.tres" id="4_0btrw"]
+
+[resource]
+script = ExtResource("1_x62si")
+display_name = "Mega Swampert"
+max_hp = 100
+delay_before_first_cast = 1.5
+rotation_speed = 5.0
+skills = Array[ExtResource("2_kt2ik")]([ExtResource("3_skgyi"), ExtResource("4_0btrw")])
+idle_animation = "Idle"
+collision_radius = 0.5
+collision_height = 2.0

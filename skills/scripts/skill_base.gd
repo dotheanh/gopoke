@@ -7,16 +7,12 @@ var caster: Node3D
 
 # Entry point để cast skill
 func cast(target_pos: Vector3) -> void:
-	#  show indicator
-	await show_indicator(caster, target_pos)
-	
-	#  thi triển skill
+	await show_indicator(target_pos)
 	execute(target_pos)
-	
 	await Engine.get_main_loop().create_timer(data.cooldown).timeout
 
-# Hiển thị Indicator (có thể override để thay đổi vị trí)
-func show_indicator(parent: Node3D, target_pos: Vector3):
+# Hiển thị Indicator
+func show_indicator(target_pos: Vector3):
 	var indicator = AreaIndicator.new()
 	indicator.setup(data.shape, data.size)
 	var current_scene = GameManagerGlobal.get_tree().get_current_scene()
@@ -25,10 +21,10 @@ func show_indicator(parent: Node3D, target_pos: Vector3):
 	await Engine.get_main_loop().create_timer(data.cast_time).timeout
 	indicator.queue_free()
 
-# Có thể override để thay đổi vị trí indicator (ví dụ Quake cast ở caster)
+# Override để thay đổi vị trí indicator (VD: Quake ở caster)
 func get_indicator_position(target_pos: Vector3) -> Vector3:
 	return target_pos
 
-# Thực thi skill (override ở subclass)
-func execute(target_pos: Vector3) -> void:
+# Override ở subclass để thực thi skill
+func execute(_target_pos: Vector3) -> void:
 	pass

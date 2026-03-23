@@ -3,29 +3,30 @@ extends MeshInstance3D
 class_name AreaIndicator
 
 func setup(shape: String, size: Vector3):
-	var mesh: Mesh
+	var m: Mesh
 	match shape:
 		"circle":
-			var m = CylinderMesh.new()
-			m.height = size.y
-			m.top_radius = size.x
-			m.bottom_radius = size.x
-			mesh = m
+			var cyl = CylinderMesh.new()
+			cyl.height = size.y
+			cyl.top_radius = size.x
+			cyl.bottom_radius = size.x
+			m = cyl
 		"line":
-			var b = BoxMesh.new()
-			b.size = size
-			mesh = b
+			var box = BoxMesh.new()
+			box.size = size
+			m = box
 		"cone":
-			var c = CylinderMesh.new()
-			c.height = size.y
-			c.top_radius = size.x
-			c.bottom_radius = 0.0
-			mesh = c
-		_: 
-			mesh = BoxMesh.new()
-			mesh.size = size
-	
-	self.mesh = mesh
+			var cone = CylinderMesh.new()
+			cone.height = size.y
+			cone.top_radius = size.x
+			cone.bottom_radius = 0.0
+			m = cone
+		_:
+			var def = BoxMesh.new()
+			def.size = size
+			m = def
+
+	self.mesh = m
 	
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = Color(1, 0, 0, 0.4) # đỏ trong suốt

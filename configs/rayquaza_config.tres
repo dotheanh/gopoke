@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BossConfig" load_steps=5 format=3 uid="uid://d4j7e52m1ylgo"]
+
+[ext_resource type="Script" uid="uid://ct3uqe0hvr8ms" path="res://configs/boss_config.gd" id="1_ld5xb"]
+[ext_resource type="Script" uid="uid://dglny0i64jogu" path="res://skill_data.gd" id="2_qsy0r"]
+[ext_resource type="Resource" uid="uid://bgut6vsy1241s" path="res://configs/meteor_skill_data.tres" id="3_nu2r5"]
+[ext_resource type="Resource" uid="uid://b1lcgmi7fe5r2" path="res://configs/quake_skill_data.tres" id="4_oe6qf"]
+
+[resource]
+script = ExtResource("1_ld5xb")
+hp_multiplier = 5.0
+display_name = "Rayquaza"
+max_hp = 100
+delay_before_first_cast = 2.0
+rotation_speed = 3.0
+skills = Array[ExtResource("2_qsy0r")]([ExtResource("3_nu2r5"), ExtResource("4_oe6qf")])
+idle_animation = "Animation"
+collision_radius = 1.0
+collision_height = 3.5

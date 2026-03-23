@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bx5xp34j3x7no"]
+[gd_scene load_steps=21 format=3 uid="uid://bx5xp34j3x7no"]
 
 [ext_resource type="Script" uid="uid://dbqosvgfbr2v7" path="res://DebugObjects.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bd2hkqiyydmjp" path="res://player.gd" id="1_ig7tw"]
@@ -11,6 +11,8 @@
 [ext_resource type="Resource" uid="uid://di7u74pwm5u0j" path="res://skills/quake_skill.tres" id="6_272bh"]
 [ext_resource type="Script" uid="uid://ca7a44p1mvp0k" path="res://boss.gd" id="7_272bh"]
 [ext_resource type="PackedScene" uid="uid://bwyxiv2kgjlut" path="res://models/pokemon/rayquaza/anim/MegaRayquazaNLA.glb" id="8_kek77"]
+[ext_resource type="Resource" uid="uid://dcdtx4k5nyb08" path="res://configs/swampert_config.tres" id="9_swampertcfg"]
+[ext_resource type="Resource" uid="uid://d4j7e52m1ylgo" path="res://configs/rayquaza_config.tres" id="10_rayquazacfg"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(128, 128)
@@ -60,10 +62,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.556636, -0.0512676)
 [node name="Camera3D" type="Camera3D" parent="Player/CameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 1.71083e-08, 3.52206, 2.75269)
 
-[node name="Monster" type="CharacterBody3D" parent="." node_paths=PackedStringArray("anim_player") groups=["Enemy"]]
+[node name="Monster" type="CharacterBody3D" parent="." groups=["Enemy"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.78994, 0.576394, 10.1073)
 script = ExtResource("3_h2yge")
-anim_player = NodePath("megaswampert2/AnimationPlayer")
+config = ExtResource("9_swampertcfg")
 
 [node name="megaswampert2" parent="Monster" instance=ExtResource("4_4c57u")]
 transform = Transform3D(-0.01, 0, 8.74228e-10, 0, 0.01, 0, -8.74228e-10, 0, -0.01, 0, 0, 0)
@@ -79,13 +81,12 @@ shape = SubResource("BoxShape3D_ig7tw")
 
 [node name="MonsterSkillCaster" type="Node" parent="Monster"]
 script = ExtResource("4_7mycd")
-skill_resources = Array[ExtResource("5_272bh")]([ExtResource("6_272bh")])
-metadata/_custom_type_script = "uid://clvtlvv802yr5"
+skills = Array[ExtResource("5_272bh")]([ExtResource("6_272bh")])
 
-[node name="Boss" type="CharacterBody3D" parent="." node_paths=PackedStringArray("anim_player") groups=["Enemy"]]
+[node name="Boss" type="CharacterBody3D" parent="." groups=["Enemy"]]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.0208726, 1.51606, 25.4338)
 script = ExtResource("7_272bh")
-anim_player = NodePath("rayquaza3d/AnimationPlayer")
+config = ExtResource("10_rayquazacfg")
 
 [node name="rayquaza3d" parent="Boss" instance=ExtResource("8_kek77")]
 transform = Transform3D(-0.05, 0, -7.54979e-09, 0, 0.05, 0, 7.54979e-09, 0, -0.05, 0, -0.696129, -0.406962)
@@ -102,8 +103,7 @@ debug_color = Color(0.996227, 0, 0.190787, 0.42)
 
 [node name="MonsterSkillCaster" type="Node" parent="Boss"]
 script = ExtResource("4_7mycd")
-skill_resources = Array[ExtResource("5_272bh")]([ExtResource("6_5vw27")])
-metadata/_custom_type_script = "uid://clvtlvv802yr5"
+skills = Array[ExtResource("5_272bh")]([ExtResource("6_5vw27")])
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.769901, 0, 0.638163, -0.341446, 0.844823, 0.411932, -0.539135, -0.535046, 0.65043, 0, 1.80417, 5.9951)
