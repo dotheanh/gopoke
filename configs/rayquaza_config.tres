@@ -9,7 +9,7 @@
 script = ExtResource("1_ld5xb")
 hp_multiplier = 5.0
 display_name = "Rayquaza"
-max_hp = 100
+max_hp = 60
 delay_before_first_cast = 2.0
 rotation_speed = 3.0
 skills = Array[ExtResource("2_qsy0r")]([ExtResource("3_nu2r5"), ExtResource("4_oe6qf")])

@@ -8,7 +8,7 @@
 [resource]
 script = ExtResource("1_x62si")
 display_name = "Mega Swampert"
-max_hp = 100
+max_hp = 50
 delay_before_first_cast = 1.5
 rotation_speed = 5.0
 skills = Array[ExtResource("2_kt2ik")]([ExtResource("3_skgyi"), ExtResource("4_0btrw")])

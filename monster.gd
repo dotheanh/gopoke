@@ -21,6 +21,7 @@ var _idle_animation: String = "Idle"
 
 # ── Nodes ────────────────────────────────────────────────────────
 @onready var skill_caster: MonsterSkillCaster = $MonsterSkillCaster
+@onready var hp_bar_label: Label3D = $HPBarLabel
 
 ## AnimationPlayer nằm trong scene con đã instance (VD: megaswampert2/AnimationPlayer)
 ## Dùng find_child thay vì @export để tránh NodePath resolution order issue
@@ -104,6 +105,13 @@ func _apply_config() -> void:
 	if anim_player != null and anim_player.has_animation(_idle_animation):
 		anim_player.play(_idle_animation)
 
+	# Setup HP bar Label3D
+	if hp_bar_label != null:
+		var display = config.display_name if config and "display_name" in config else name
+		hp_bar_label.text = "%s: %d/%d" % [display, hp, max_hp]
+		hp_bar_label.modulate = _hp_color_ratio(1.0)
+		hp_changed.connect(_on_hp_bar_update)
+
 func _apply_defaults() -> void:
 	max_hp = 100
 	hp = max_hp
@@ -122,6 +130,19 @@ func take_damage(amount: int) -> void:
 func die() -> void:
 	_ai_active = false
 	_pending_skill = null
+
+	# Hiệu ứng chết: scale down nhanh trong 0.5s rồi xóa
+	if hp_bar_label != null:
+		hp_bar_label.queue_free()
+
+	# Scale animation để tạo hiệu ứng biến mất
+	var tween := create_tween().set_parallel(true)
+	tween.tween_property(self, "scale", Vector3.ZERO, 0.4)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(self, "modulate:a", 0.0, 0.3)\
+		.set_ease(Tween.EASE_IN)
+
+	await tween.finished
 	emit_signal("died")
 	queue_free()
 
@@ -172,6 +193,24 @@ func _short_angle_diff(from_angle: float, to_angle: float) -> float:
 	while d > PI:  d -= TAU
 	while d < -PI: d += TAU
 	return d
+
+## Màu HP bar theo tỷ lệ
+func _hp_color_ratio(ratio: float) -> Color:
+	if ratio > 0.5:
+		return Color(0.2, 1.0, 0.2)   # xanh
+	elif ratio > 0.25:
+		return Color(1.0, 0.8, 0.0)   # vàng
+	else:
+		return Color(1.0, 0.2, 0.2)   # đỏ
+
+## Cập nhật Label3D khi HP thay đổi
+func _on_hp_bar_update(current: int, max_val: int) -> void:
+	if hp_bar_label == null:
+		return
+	var display = config.display_name if config and "display_name" in config else name
+	hp_bar_label.text = "%s: %d/%d" % [display, current, max_val]
+	var ratio := float(current) / float(max_val) if max_val > 0 else 0.0
+	hp_bar_label.modulate = _hp_color_ratio(ratio)
 
 ## Setup hướng nhắm — gọi từ bên ngoài khi muốn ép skill cụ thể
 func aim_at(target_pos: Vector3, skill: SkillBase) -> void:

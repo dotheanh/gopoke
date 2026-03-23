@@ -7,6 +7,14 @@ var zoom_speed := 20.0        # tốc độ tiến/lùi quanh target
 @export var max_hp := 100
 @export var anim_player: AnimationPlayer
 
+# --- SKILL CONFIG ---
+@export var arrow_skill_data: SkillData
+
+# --- Player SKILL REGISTRY ---
+const PLAYER_SKILL_REGISTRY: Dictionary = {
+	"Arrow": preload("res://skills/scripts/Arrow.gd"),
+}
+
 # --- NODES ---
 @onready var camera: Camera3D = $CameraPivot/Camera3D
 @onready var marker: MeshInstance3D = MeshInstance3D.new()
@@ -14,8 +22,9 @@ var zoom_speed := 20.0        # tốc độ tiến/lùi quanh target
 # --- STATE ---
 var current_target: Node = null
 var orbit_angle: float = 0.0
-var orbit_radius: float = 3.0  # giá trị mặc định nếu muốn
+var orbit_radius: float = 3.0
 var hp: int
+var _arrow_cooldown: bool = true
 
 signal hp_changed(current: int, max: int)
 
@@ -51,36 +60,69 @@ func die() -> void:
 	queue_free()
 	GameManagerGlobal.on_player_died()
 
+# ── Player Skill: Arrow ──────────────────────────────────────────
+func _cast_arrow() -> void:
+	if not _arrow_cooldown or arrow_skill_data == null:
+		return
+	if current_target == null:
+		print("No target locked — cannot cast Arrow")
+		return
+
+	_arrow_cooldown = false
+	var script_class = PLAYER_SKILL_REGISTRY.get(arrow_skill_data.skill_name)
+	if script_class == null:
+		push_error("Arrow skill not found in PLAYER_SKILL_REGISTRY")
+		return
+
+	var skill: SkillBase = script_class.new()
+	skill.data = arrow_skill_data
+	skill.caster = self
+
+	# Lưu locked target vào caster để Arrow nhận biết trúng
+	set_meta("locked_target", current_target)
+	skill.cast(current_target.global_transform.origin)
+
+	# Cooldown
+	await Engine.get_main_loop().create_timer(arrow_skill_data.cooldown).timeout
+	_arrow_cooldown = true
+
 func _input(event):
-	# CLICK để lock target
+	# CLICK để lock target hoặc cast Arrow (click lên chính player)
 	if event is InputEventMouseButton and event.pressed:
 		var cam = get_viewport().get_camera_3d()
 		if not cam:
 			print("No active camera found!")
 			return
-		
+
 		var from = cam.project_ray_origin(event.position)
 		var dir = cam.project_ray_normal(event.position)
 		var to = from + dir * 100
-		
+
 		var params = PhysicsRayQueryParameters3D.new()
 		params.from = from
 		params.to = to
 		params.collision_mask = 1
 		params.exclude = [self]
-		
+
 		var space_state = get_world_3d().direct_space_state
 		var result = space_state.intersect_ray(params)
-		
+
 		if result:
 			var collider = result.collider
-			if collider.is_in_group("Enemy"):
+			if collider == self or collider.is_in_group("Player"):
+				# Click lên chính mình → cast Arrow
+				_cast_arrow()
+			elif collider.is_in_group("Enemy"):
 				lock_target(collider)
-		else:
-			print("Ray missed")
+
+	# Phím F để cast Arrow
+	if event is InputEventKey and event.pressed and event.keycode == Key.KEY_F:
+		_cast_arrow()
 
 func lock_target(target_node: Node) -> void:
 	current_target = target_node
+	# Đánh dấu locked target để Arrow nhận biết
+	set_meta("locked_target", target_node)
 	marker.visible = true
 	marker.global_transform.origin = target_node.global_transform.origin + Vector3(0, 3, 0)
 	
