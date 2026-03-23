@@ -21,6 +21,8 @@ var _idle_animation: String = "Idle"
 
 # ── Nodes ────────────────────────────────────────────────────────
 @onready var skill_caster: MonsterSkillCaster = $MonsterSkillCaster
+@onready var hp_bar_fill: MeshInstance3D = $HPBarFill
+@onready var hp_bar_bg: MeshInstance3D = $HPBarBg
 @onready var hp_bar_label: Label3D = $HPBarLabel
 
 ## AnimationPlayer nằm trong scene con đã instance (VD: megaswampert2/AnimationPlayer)
@@ -40,6 +42,9 @@ var _hp_overridden: bool = false
 
 # ── Config cho AI (đọc từ config hoặc default) ─────────────────
 var _face_update_interval: float = 0.8
+
+# ── HP bar state ────────────────────────────────────────────────
+var _bar_max_size: float = 2.0   # kích thước x ban đầu của BoxMesh fill
 
 # ── Signals ──────────────────────────────────────────────────────
 signal hp_changed(current: int, max_hp: int)
@@ -110,6 +115,10 @@ func _apply_config() -> void:
 		var display = config.display_name if config and "display_name" in config else name
 		hp_bar_label.text = "%s: %d/%d" % [display, hp, max_hp]
 		hp_bar_label.modulate = _hp_color_ratio(1.0)
+
+	# Lưu kích thước BoxMesh fill để scale đúng
+	if hp_bar_fill != null and hp_bar_fill.mesh is BoxMesh:
+		_bar_max_size = (hp_bar_fill.mesh as BoxMesh).size.x
 		hp_changed.connect(_on_hp_bar_update)
 
 func _apply_defaults() -> void:
@@ -131,9 +140,13 @@ func die() -> void:
 	_ai_active = false
 	_pending_skill = null
 
-	# Hiệu ứng chết: scale down nhanh trong 0.5s rồi xóa
+	# Xóa HP bar
 	if hp_bar_label != null:
 		hp_bar_label.queue_free()
+	if hp_bar_fill != null:
+		hp_bar_fill.queue_free()
+	if hp_bar_bg != null:
+		hp_bar_bg.queue_free()
 
 	# Scale animation để tạo hiệu ứng biến mất
 	var tween := create_tween().set_parallel(true)
@@ -203,14 +216,22 @@ func _hp_color_ratio(ratio: float) -> Color:
 	else:
 		return Color(1.0, 0.2, 0.2)   # đỏ
 
-## Cập nhật Label3D khi HP thay đổi
+## Cập nhật HP bar mesh khi HP thay đổi
 func _on_hp_bar_update(current: int, max_val: int) -> void:
-	if hp_bar_label == null:
-		return
-	var display = config.display_name if config and "display_name" in config else name
-	hp_bar_label.text = "%s: %d/%d" % [display, current, max_val]
 	var ratio := float(current) / float(max_val) if max_val > 0 else 0.0
-	hp_bar_label.modulate = _hp_color_ratio(ratio)
+
+	# Đặt size.x của BoxMesh fill trực tiếp (co lại từ phải sang trái)
+	if hp_bar_fill != null and hp_bar_fill.mesh is BoxMesh:
+		var box: BoxMesh = hp_bar_fill.mesh as BoxMesh
+		box.size.x = maxf(ratio * _bar_max_size, 0.01)
+		if hp_bar_fill.material_override == null:
+			hp_bar_fill.material_override = StandardMaterial3D.new()
+		hp_bar_fill.material_override.albedo_color = _hp_color_ratio(ratio)
+
+	# Cập nhật chữ
+	if hp_bar_label != null:
+		var display = config.display_name if config and "display_name" in config else name
+		hp_bar_label.text = "%s: %d/%d" % [display, current, max_val]
 
 ## Setup hướng nhắm — gọi từ bên ngoài khi muốn ép skill cụ thể
 func aim_at(target_pos: Vector3, skill: SkillBase) -> void:

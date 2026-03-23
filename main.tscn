@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bx5xp34j3x7no"]
+[gd_scene load_steps=29 format=3 uid="uid://bx5xp34j3x7no"]
 
 [ext_resource type="Script" uid="uid://dbqosvgfbr2v7" path="res://DebugObjects.gd" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bd2hkqiyydmjp" path="res://player.gd" id="1_ig7tw"]
@@ -13,7 +13,6 @@
 [ext_resource type="PackedScene" uid="uid://bwyxiv2kgjlut" path="res://models/pokemon/rayquaza/anim/MegaRayquazaNLA.glb" id="8_kek77"]
 [ext_resource type="Resource" uid="uid://dcdtx4k5nyb08" path="res://configs/swampert_config.tres" id="9_swampertcfg"]
 [ext_resource type="Resource" uid="uid://d4j7e52m1ylgo" path="res://configs/rayquaza_config.tres" id="10_rayquazacfg"]
-[ext_resource type="Resource" path="res://configs/arrow_skill_data.tres" id="11_arrowcfg"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
 size = Vector2(128, 128)
@@ -26,9 +25,33 @@ size = Vector2(128, 128)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_w48qg"]
+size = Vector3(2, 0.2, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vivmo"]
+albedo_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_2cqfq"]
+size = Vector3(2, 0.15, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yaehf"]
+albedo_color = Color(0.2, 1, 0.2, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_ycdy4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_w48qg"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_074og"]
+size = Vector3(4, 0.4, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cegan"]
+albedo_color = Color(0.2, 0.2, 0.2, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_82xsv"]
+size = Vector3(4, 0.3, 0.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_getpj"]
+albedo_color = Color(1, 0.2, 0.2, 1)
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_0xm2m")
@@ -44,7 +67,6 @@ transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0.5
 script = ExtResource("1_ig7tw")
 max_hp = 1000
 anim_player = NodePath("megasceptile2/AnimationPlayer")
-arrow_skill_data = ExtResource("11_arrowcfg")
 
 [node name="megasceptile2" parent="Player" instance=ExtResource("3_efxa6")]
 transform = Transform3D(-0.01, 0, -1.50996e-09, 0, 0.01, 0, 1.50996e-09, 0, -0.01, 0, 0, 0)
@@ -68,16 +90,7 @@ transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 1.
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.78994, 0.576394, 10.1073)
 script = ExtResource("3_h2yge")
 config = ExtResource("9_swampertcfg")
-
-[node name="HPBarLabel" type="Label3D" parent="Monster"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
-pixel_size = 0.005
-modulate = Color(0.2, 1, 0.2, 1)
-font_size = 48
-outline_size = 8
-outline_modulate = Color(0, 0, 0, 1)
-text = "Mega Swampert: 50/50"
-always_on_top = true
+model_scene_name = null
 
 [node name="megaswampert2" parent="Monster" instance=ExtResource("4_4c57u")]
 transform = Transform3D(-0.01, 0, 8.74228e-10, 0, 0.01, 0, -8.74228e-10, 0, -0.01, 0, 0, 0)
@@ -95,20 +108,27 @@ shape = SubResource("BoxShape3D_ig7tw")
 script = ExtResource("4_7mycd")
 skills = Array[ExtResource("5_272bh")]([ExtResource("6_272bh")])
 
+[node name="HPBarLabel" type="Label3D" parent="Monster"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, 0)
+modulate = Color(0.2, 1, 0.2, 1)
+text = "Mega Swampert: 50/50"
+font_size = 48
+outline_size = 8
+
+[node name="HPBarBg" type="MeshInstance3D" parent="Monster"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0)
+mesh = SubResource("BoxMesh_w48qg")
+surface_material_override/0 = SubResource("StandardMaterial3D_vivmo")
+
+[node name="HPBarFill" type="MeshInstance3D" parent="Monster"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.6, 0.06)
+mesh = SubResource("BoxMesh_2cqfq")
+surface_material_override/0 = SubResource("StandardMaterial3D_yaehf")
+
 [node name="Boss" type="CharacterBody3D" parent="." groups=["Enemy"]]
 transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0.0208726, 1.51606, 25.4338)
 script = ExtResource("7_272bh")
 config = ExtResource("10_rayquazacfg")
-
-[node name="HPBarLabel" type="Label3D" parent="Boss"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
-pixel_size = 0.005
-modulate = Color(1, 0.2, 0.2, 1)
-font_size = 64
-outline_size = 8
-outline_modulate = Color(0, 0, 0, 1)
-text = "Rayquaza: 300/300"
-always_on_top = true
 
 [node name="rayquaza3d" parent="Boss" instance=ExtResource("8_kek77")]
 transform = Transform3D(-0.05, 0, -7.54979e-09, 0, 0.05, 0, 7.54979e-09, 0, -0.05, 0, -0.696129, -0.406962)
@@ -126,6 +146,24 @@ debug_color = Color(0.996227, 0, 0.190787, 0.42)
 [node name="MonsterSkillCaster" type="Node" parent="Boss"]
 script = ExtResource("4_7mycd")
 skills = Array[ExtResource("5_272bh")]([ExtResource("6_5vw27")])
+
+[node name="HPBarLabel" type="Label3D" parent="Boss"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 0)
+double_sided = false
+modulate = Color(1, 0.2, 0.2, 1)
+text = "Rayquaza: 300/300"
+font_size = 64
+outline_size = 8
+
+[node name="HPBarBg" type="MeshInstance3D" parent="Boss"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 0)
+mesh = SubResource("BoxMesh_074og")
+surface_material_override/0 = SubResource("StandardMaterial3D_cegan")
+
+[node name="HPBarFill" type="MeshInstance3D" parent="Boss"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6.5, 0.06)
+mesh = SubResource("BoxMesh_82xsv")
+surface_material_override/0 = SubResource("StandardMaterial3D_getpj")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.769901, 0, 0.638163, -0.341446, 0.844823, 0.411932, -0.539135, -0.535046, 0.65043, 0, 1.80417, 5.9951)
