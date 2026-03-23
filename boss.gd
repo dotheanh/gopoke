@@ -11,8 +11,12 @@
 extends Monster
 
 func _ready():
+	# Tính scaled_hp từ config, KHÔNG ghi vào resource gốc
 	if config != null and config is BossConfig:
-		config.max_hp = int(config.max_hp * config.hp_multiplier)
+		var scaled_hp: int = int(config.max_hp * config.hp_multiplier)
+		max_hp = scaled_hp
+		hp = scaled_hp
+		_hp_overridden = true  # Đánh dấu để monster._apply_config() không ghi đè
 
 	super._ready()
 

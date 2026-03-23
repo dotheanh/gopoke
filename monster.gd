@@ -34,6 +34,8 @@ var _target_yaw: float = 0.0
 var _pending_skill: SkillBase = null
 var _pending_cast_pos: Vector3 = Vector3.ZERO
 var _facing_timer: float = 0.0
+var _ai_active: bool = true
+var _hp_overridden: bool = false
 
 # ── Config cho AI (đọc từ config hoặc default) ─────────────────
 var _face_update_interval: float = 0.8
@@ -91,8 +93,10 @@ func _ready():
 
 # ─────────────────────────────────────────────────────────────────
 func _apply_config() -> void:
-	max_hp = config.max_hp
-	hp = max_hp
+	# Boss có thể override max_hp trước _ready → không ghi đè
+	if not _hp_overridden:
+		max_hp = config.max_hp
+		hp = max_hp
 	_rotation_speed = config.rotation_speed
 	_idle_animation = config.idle_animation
 	if "face_update_interval" in config:
@@ -116,12 +120,14 @@ func take_damage(amount: int) -> void:
 		die()
 
 func die() -> void:
+	_ai_active = false
+	_pending_skill = null
 	emit_signal("died")
 	queue_free()
 
 # ─────────────────────────────────────────────────────────────────
 func _start_ai_loop() -> void:
-	while hp > 0:
+	while _ai_active and hp > 0:
 		await get_tree().process_frame
 		skill_caster.cast_random(_get_player_pos())
 
