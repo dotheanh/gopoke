@@ -7,6 +7,9 @@ var caster: Node3D
 
 # Entry point để cast skill
 func cast(target_pos: Vector3) -> void:
+	# Kiểm tra caster còn tồn tại
+	if caster == null or not is_instance_valid(caster):
+		return
 	await show_indicator(target_pos)
 	execute(target_pos)
 	await Engine.get_main_loop().create_timer(data.cooldown).timeout

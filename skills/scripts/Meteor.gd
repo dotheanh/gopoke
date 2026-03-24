@@ -4,6 +4,10 @@ extends SkillBase
 class_name MeteorSkill
 
 func execute(target_pos: Vector3) -> void:
+	# Kiểm tra caster còn tồn tại
+	if caster == null or not is_instance_valid(caster):
+		return
+
 	var meteor = Projectile.new()
 	meteor.speed = data.speed
 	meteor.damage = data.damage

@@ -23,3 +23,8 @@ func _ready():
 	if config != null and config.idle_animation != "":
 		if anim_player != null and anim_player.has_animation(config.idle_animation):
 			anim_player.play(config.idle_animation)
+
+	# Connect signal với BossHPBar sau khi BossHPBar đã init
+	var boss_hp_bar = get_node_or_null("BossHPBar")
+	if boss_hp_bar != null and boss_hp_bar.has_method("update_bar_from_outside"):
+		hp_changed.connect(boss_hp_bar.update_bar_from_outside)

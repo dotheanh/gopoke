@@ -12,17 +12,26 @@ var _bar_fill:  ColorRect
 var _name_label: Label
 var _hp_label:  Label
 
+var _last_hp: int = -1
+var _ui_built: bool = false
+var _boss_name: String = ""
+
 func _ready() -> void:
 	_build_ui()
+	_ui_built = true
+
+func _process(_delta: float) -> void:
+	if not _ui_built:
+		return
 	var boss = get_parent()
-	if boss.has_signal("hp_changed"):
-		boss.hp_changed.connect(_on_boss_hp_changed)
-	# Hiển thị giá trị ban đầu
 	if boss is Monster:
-		var display: String = boss.config.display_name \
-			if boss.config and "display_name" in boss.config else str(boss.name)
-		_name_label.text = display
-		_update_bar(boss.hp, boss.max_hp)
+		# Poll HP và tên
+		if boss.hp != _last_hp or _boss_name == "":
+			_last_hp = boss.hp
+			if _boss_name == "":
+				_boss_name = boss.config.display_name if boss.config and "display_name" in boss.config else str(boss.name)
+				_name_label.text = _boss_name
+			_update_bar(boss.hp, boss.max_hp)
 
 func _build_ui() -> void:
 	var viewport_size: Vector2 = get_tree().get_root().get_visible_rect().size
@@ -76,7 +85,7 @@ func _build_ui() -> void:
 	_bar_fill = ColorRect.new()
 	_bar_fill.set_anchor(SIDE_LEFT,   0.0)
 	_bar_fill.set_anchor(SIDE_TOP,    0.0)
-	_bar_fill.set_anchor(SIDE_RIGHT,  1.0)   # sẽ bị thu hẹp khi HP giảm
+	_bar_fill.set_anchor(SIDE_RIGHT,  1.0)   # full width ban đầu
 	_bar_fill.set_anchor(SIDE_BOTTOM, 1.0)
 	_bar_fill.color = Color(0.2, 1.0, 0.2, 1.0)
 	bar_root.add_child(_bar_fill)
@@ -96,7 +105,16 @@ func _build_ui() -> void:
 
 func _update_bar(current: int, max_val: int) -> void:
 	var ratio := float(current) / float(max_val) if max_val > 0 else 0.0
-	_bar_fill.set_anchor(SIDE_RIGHT, maxf(ratio, 0.005))
+
+	# Co thanh bar từ PHẢI sang TRÁI - cần set cả size và position
+	var bar_parent = _bar_fill.get_parent()
+	var max_width = bar_parent.size.x if bar_parent else 612.0
+	var new_width = maxf(ratio * max_width, 1.0)
+	_bar_fill.set_anchor(SIDE_LEFT, 0.0)
+	_bar_fill.set_anchor(SIDE_TOP, 0.0)
+	_bar_fill.set_anchor(SIDE_BOTTOM, 1.0)
+	_bar_fill.set_anchor(SIDE_RIGHT, 0.0)  # Left edge cố định
+	_bar_fill.size = Vector2(new_width, bar_parent.size.y if bar_parent else BAR_HEIGHT)
 
 	if   ratio > 0.5:  _bar_fill.color = Color(0.2, 1.0, 0.2)
 	elif ratio > 0.25: _bar_fill.color = Color(1.0, 0.8, 0.0)

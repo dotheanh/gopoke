@@ -7,6 +7,8 @@ var SkillBaseClass = preload("res://skills/scripts/skill_base.gd")
 
 # Indicator luôn nằm tại caster
 func get_indicator_position(_target_pos: Vector3) -> Vector3:
+	if caster == null or not is_instance_valid(caster):
+		return Vector3.ZERO
 	return Vector3(caster.global_transform.origin.x, 0, caster.global_transform.origin.z)
 
 func execute(_target_pos: Vector3) -> void:

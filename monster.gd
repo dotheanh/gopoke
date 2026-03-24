@@ -237,10 +237,16 @@ func _hp_color_ratio(ratio: float) -> Color:
 func _on_hp_bar_update(current: int, max_val: int) -> void:
 	var ratio := float(current) / float(max_val) if max_val > 0 else 0.0
 
-	# Đặt size.x của BoxMesh fill trực tiếp (co lại từ phải sang trái)
+	# Co fill từ PHẢI sang TRÁI (right-to-left)
 	if hp_bar_fill != null and hp_bar_fill.mesh is BoxMesh:
 		var box: BoxMesh = hp_bar_fill.mesh as BoxMesh
-		box.size.x = maxf(ratio * _bar_max_size, 0.01)
+		var new_size: float = maxf(ratio * _bar_max_size, 0.01)
+		# BoxMesh co vào center → cần offset position để co về phải
+		# offset = (_bar_max_size - new_size) / 2
+		var half_diff: float = (_bar_max_size - new_size) / 2.0
+		box.size.x = new_size
+		# Đặt fill ở center (x=0 trong scene) rồi offset để co về phải
+		hp_bar_fill.position.x = half_diff
 		if hp_bar_fill.material_override == null:
 			hp_bar_fill.material_override = StandardMaterial3D.new()
 		hp_bar_fill.material_override.albedo_color = _hp_color_ratio(ratio)

@@ -189,4 +189,6 @@ func _physics_process(delta):
 		var desired_rotation = (target_pos - global_transform.origin).normalized()
 		var current_forward = -global_transform.basis.z
 		var lerped_dir = current_forward.lerp(desired_rotation, delta * 10.0).normalized()
-		look_at(global_transform.origin + lerped_dir, Vector3.UP)
+		# Tránh look_at khi direction gần thẳng đứng (tránh Basis invert crash)
+		if abs(lerped_dir.y) < 0.99:
+			look_at(global_transform.origin + lerped_dir, Vector3.UP)

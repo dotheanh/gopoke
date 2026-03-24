@@ -11,12 +11,16 @@ var _arrow_instance: Area3D
 
 # Override: indicator ở giữa đường bay caster→target
 func get_indicator_position(target_pos: Vector3) -> Vector3:
+	if caster == null or not is_instance_valid(caster):
+		return target_pos
 	var caster_pos := caster.global_transform.origin + Vector3(0, 0.5, 0)
 	var end_pos := target_pos + Vector3(0, 0.5, 0)
 	return caster_pos.lerp(end_pos, 0.5)
 
 # Override: xoay indicator theo hướng bay + scale chiều dài theo khoảng cách
 func show_indicator(target_pos: Vector3):
+	if caster == null or not is_instance_valid(caster):
+		return
 	var indicator = AreaIndicator.new()
 	var caster_pos := caster.global_transform.origin
 	var flight_dist := caster_pos.distance_to(target_pos)
@@ -33,6 +37,13 @@ func show_indicator(target_pos: Vector3):
 	indicator.queue_free()
 
 func execute(target_pos: Vector3) -> void:
+	if caster == null or not is_instance_valid(caster):
+		return
+
+	# Lưu locked target trước khi tạo arrow
+	var locked_target = caster.get_meta("locked_target") if caster.has_meta("locked_target") else null
+	var caster_name = caster.name if is_instance_valid(caster) else "Unknown"
+
 	var arrow = Area3D.new()
 	arrow.name = "Arrow"
 	# Tạo mesh hình mũi tên (cylinder dài)
@@ -60,7 +71,7 @@ func execute(target_pos: Vector3) -> void:
 
 	# Thiết lập thuộc tính
 	arrow.set_meta("damage", data.damage)
-	arrow.set_meta("target", caster.get_meta("locked_target") if caster.has_meta("locked_target") else null)
+	arrow.set_meta("target", locked_target)
 
 	# Xử lý va chạm
 	arrow.body_entered.connect(_on_arrow_hit.bind(arrow))
@@ -99,7 +110,7 @@ func execute(target_pos: Vector3) -> void:
 	if is_instance_valid(arrow):
 		arrow.queue_free()
 
-	print("Arrow hit by:", caster.name, "→ damage:", data.damage)
+	print("Arrow hit by:", caster_name, "→ damage:", data.damage)
 
 func _on_arrow_hit(body: Node, arrow: Area3D) -> void:
 	var dmg: int = arrow.get_meta("damage")
